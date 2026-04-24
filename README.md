@@ -9,7 +9,8 @@ API для социальной сети Yatube. Позволяет пользо
 - Python 3.10
 - Django 3.2.16
 - Django REST Framework 3.12.4
-- Simple JWT 4.7.2
+- Simple JWT 5.3.1
+- Djoser 2.2.0
 
 ## Установка
 
@@ -37,17 +38,22 @@ pip install -r requirements.txt
 python yatube_api/manage.py migrate
 ```
 
-5. Создайте суперпользователя:
+5. Создайте суперпользователя (для доступа к админке):
 ```bash
 python yatube_api/manage.py createsuperuser
 ```
 
-6. Запустите сервер:
+6. (Опционально) Создайте группы через админку:
+```
+http://127.0.0.1:8000/admin/
+```
+
+7. Запустите сервер:
 ```bash
 python yatube_api/manage.py runserver
 ```
 
-7. Запустите тесты:
+8. Запустите тесты:
 ```bash
 pytest
 ```
@@ -56,6 +62,8 @@ pytest
 
 После запуска сервера документация доступна по адресу:
 http://127.0.0.1:8000/redoc/
+
+**Важно:** Большинство запросов требуют JWT-аутентификацию. Сначала получите токен через `/api/v1/jwt/create/`.
 
 ## Примеры запросов
 
@@ -69,9 +77,22 @@ Content-Type: application/json
     "username": "your_username",
     "password": "your_password"
 }
+
+Ответ:
+{
+    "refresh": "refresh_token",
+    "access": "access_token"
+}
 ```
 
-### Получение списка постов
+### Получение списка постов (с пагинацией)
+
+```
+GET /api/v1/posts/
+GET /api/v1/posts/?limit=10&offset=0
+```
+
+### Получение списка постов (аутентифицированный пользователь)
 
 ```
 GET /api/v1/posts/
@@ -134,6 +155,18 @@ Authorization: Bearer <your_token>
 ```
 GET /api/v1/follow/?search=username
 Authorization: Bearer <your_token>
+```
+
+### Получение списка групп
+
+```
+GET /api/v1/groups/
+```
+
+### Получение информации о группе
+
+```
+GET /api/v1/groups/{id}/
 ```
 
 ## Автор
