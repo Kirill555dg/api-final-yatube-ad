@@ -21,7 +21,7 @@ cd api-final-yatube-ad
 
 2. Создайте и активируйте виртуальное окружение:
 ```bash
-python -m venv .venv
+python3.10 -m venv .venv
 source .venv/bin/activate  # для Linux/macOS
 # или
 .venv\Scripts\activate  # для Windows
@@ -45,6 +45,11 @@ python yatube_api/manage.py createsuperuser
 6. Запустите сервер:
 ```bash
 python yatube_api/manage.py runserver
+```
+
+7. Запустите тесты:
+```bash
+pytest
 ```
 
 ## Документация API
