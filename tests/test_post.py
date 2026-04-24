@@ -12,7 +12,9 @@ class TestPostAPI:
     post_list_url = "/api/v1/posts/"
     post_detail_url = "/api/v1/posts/{post_id}/"
 
-    def check_post_data(self, response_data, request_method_and_url, db_post=None):
+    def check_post_data(
+        self, response_data, request_method_and_url, db_post=None
+    ):
         expected_fields = ("id", "text", "author", "pub_date")
         for field in expected_fields:
             assert field in response_data, (
@@ -71,7 +73,9 @@ class TestPostAPI:
 
         db_post = Post.objects.first()
         test_post = test_data[0]
-        self.check_post_data(test_post, f"GET-запрос к `{self.post_list_url}`", db_post)
+        self.check_post_data(
+            test_post, f"GET-запрос к `{self.post_list_url}`", db_post
+        )
 
     def test_post_create_auth_with_invalid_data(self, user_client):
         posts_count = Post.objects.count()
@@ -86,7 +90,9 @@ class TestPostAPI:
             f"отправленный к `{self.post_list_url}`, не создаёт новый пост."
         )
 
-    def test_post_create_auth_with_valid_data(self, user_client, user, group_1):
+    def test_post_create_auth_with_valid_data(
+        self, user_client, user, group_1
+    ):
         post_count = Post.objects.count()
 
         assert_msg = (
@@ -98,7 +104,10 @@ class TestPostAPI:
         try:
             response = user_client.post(self.post_list_url, data=data)
         except IntegrityError as error:
-            raise AssertionError(assert_msg + (f" В процессе выполнения запроса произошла ошибка: {error}"))
+            raise AssertionError(
+                assert_msg
+                + (f" В процессе выполнения запроса произошла ошибка: {error}")
+            )
         assert response.status_code == HTTPStatus.CREATED, assert_msg
         post_count += 1
 
@@ -108,7 +117,9 @@ class TestPostAPI:
             f"`{self.post_list_url}` возвращает ответ, содержащий данные "
             "нового поста в виде словаря."
         )
-        self.check_post_data(test_data, f"POST-запрос к `{self.post_list_url}`")
+        self.check_post_data(
+            test_data, f"POST-запрос к `{self.post_list_url}`"
+        )
         assert test_data.get("text") == data["text"], (
             "Проверьте, что для авторизованного пользователя POST-запрос к "
             f"`{self.post_list_url}` возвращает ответ, содержащий текст "
@@ -152,7 +163,12 @@ class TestPostAPI:
         try:
             response = client.post(self.post_list_url, data=data)
         except ValueError as error:
-            raise AssertionError(assert_msg + (f"\nВ процессе выполнения запроса произошла ошибка: {error}"))
+            raise AssertionError(
+                assert_msg
+                + (
+                    f"\nВ процессе выполнения запроса произошла ошибка: {error}"
+                )
+            )
         assert response.status_code == HTTPStatus.UNAUTHORIZED, assert_msg
 
         assert posts_conut == Post.objects.count(), (
@@ -160,7 +176,9 @@ class TestPostAPI:
         )
 
     def test_post_get_current(self, user_client, post):
-        response = user_client.get(self.post_detail_url.format(post_id=post.id))
+        response = user_client.get(
+            self.post_detail_url.format(post_id=post.id)
+        )
 
         assert response.status_code == HTTPStatus.OK, (
             "Проверьте, что GET-запрос авторизованного пользователя к "
@@ -168,12 +186,18 @@ class TestPostAPI:
         )
 
         test_data = response.json()
-        self.check_post_data(test_data, f"GET-запрос к `{self.post_detail_url}`", post)
+        self.check_post_data(
+            test_data, f"GET-запрос к `{self.post_detail_url}`", post
+        )
 
     @pytest.mark.parametrize("http_method", ("put", "patch"))
-    def test_post_change_auth_with_valid_data(self, user_client, post, another_post, http_method):
+    def test_post_change_auth_with_valid_data(
+        self, user_client, post, another_post, http_method
+    ):
         request_func = getattr(user_client, http_method)
-        response = request_func(self.post_detail_url.format(post_id=post.id), data=self.VALID_DATA)
+        response = request_func(
+            self.post_detail_url.format(post_id=post.id), data=self.VALID_DATA
+        )
         http_method = http_method.upper()
         assert response.status_code == HTTPStatus.OK, (
             f"Проверьте, что {http_method}-запрос авторизованного "
@@ -194,9 +218,13 @@ class TestPostAPI:
         )
 
     @pytest.mark.parametrize("http_method", ("put", "patch"))
-    def test_post_change_not_auth_with_valid_data(self, client, post, http_method):
+    def test_post_change_not_auth_with_valid_data(
+        self, client, post, http_method
+    ):
         request_func = getattr(client, http_method)
-        response = request_func(self.post_detail_url.format(post_id=post.id), data=self.VALID_DATA)
+        response = request_func(
+            self.post_detail_url.format(post_id=post.id), data=self.VALID_DATA
+        )
         http_method = http_method.upper()
         assert response.status_code == HTTPStatus.UNAUTHORIZED, (
             f"Проверьте, что {http_method}-запрос неавторизованного "
@@ -211,9 +239,14 @@ class TestPostAPI:
         )
 
     @pytest.mark.parametrize("http_method", ("put", "patch"))
-    def test_post_change_not_author_with_valid_data(self, user_client, another_post, http_method):
+    def test_post_change_not_author_with_valid_data(
+        self, user_client, another_post, http_method
+    ):
         request_func = getattr(user_client, http_method)
-        response = request_func(self.post_detail_url.format(post_id=another_post.id), data=self.VALID_DATA)
+        response = request_func(
+            self.post_detail_url.format(post_id=another_post.id),
+            data=self.VALID_DATA,
+        )
         http_method = http_method.upper()
         assert response.status_code == HTTPStatus.FORBIDDEN, (
             f"Проверьте, что {http_method}-запрос авторизованного "
@@ -229,9 +262,15 @@ class TestPostAPI:
         )
 
     @pytest.mark.parametrize("http_method", ("put", "patch"))
-    def test_post_patch_auth_with_invalid_data(self, user_client, post, http_method):
+    def test_post_patch_auth_with_invalid_data(
+        self, user_client, post, http_method
+    ):
         request_func = getattr(user_client, http_method)
-        response = request_func(self.post_detail_url.format(post_id=post.id), data={"text": {}}, format="json")
+        response = request_func(
+            self.post_detail_url.format(post_id=post.id),
+            data={"text": {}},
+            format="json",
+        )
         assert response.status_code == HTTPStatus.BAD_REQUEST, (
             f"Проверьте, что {http_method}-запрос с некорректными данными от "
             f"авторизованного пользователя к `{self.post_detail_url}` "
@@ -239,17 +278,23 @@ class TestPostAPI:
         )
 
     def test_post_delete_by_author(self, user_client, post):
-        response = user_client.delete(self.post_detail_url.format(post_id=post.id))
+        response = user_client.delete(
+            self.post_detail_url.format(post_id=post.id)
+        )
         assert response.status_code == HTTPStatus.NO_CONTENT, (
             "Проверьте, что для автора поста DELETE-запрос к "
             f"`{self.post_detail_url}` возвращает ответ со статусом 204."
         )
 
         test_post = Post.objects.filter(id=post.id).first()
-        assert not test_post, "Проверьте, что DELETE-запрос автора поста к  `/api/v1/posts/{id}/` удаляет этот пост."
+        assert not test_post, (
+            "Проверьте, что DELETE-запрос автора поста к  `/api/v1/posts/{id}/` удаляет этот пост."
+        )
 
     def test_post_delete_not_author(self, user_client, another_post):
-        response = user_client.delete(self.post_detail_url.format(post_id=another_post.id))
+        response = user_client.delete(
+            self.post_detail_url.format(post_id=another_post.id)
+        )
         assert response.status_code == HTTPStatus.FORBIDDEN, (
             "Проверьте, что DELETE-запрос авторизованного пользователя, "
             f"отправленный на `{self.post_detail_url}` к чужому посту, вернёт "
@@ -257,7 +302,9 @@ class TestPostAPI:
         )
 
         test_post = Post.objects.filter(id=another_post.id).first()
-        assert test_post, "Проверьте, что авторизованный пользователь не может удалить чужой пост."
+        assert test_post, (
+            "Проверьте, что авторизованный пользователь не может удалить чужой пост."
+        )
 
     def test_post_unauth_delete_current(self, client, post):
         response = client.delete(self.post_detail_url.format(post_id=post.id))

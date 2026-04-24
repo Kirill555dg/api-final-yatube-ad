@@ -15,7 +15,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Group",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("title", models.CharField(max_length=200)),
                 ("slug", models.SlugField(unique=True)),
                 ("description", models.TextField()),
@@ -24,17 +32,35 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="comment",
             name="id",
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID"),
+            field=models.BigAutoField(
+                auto_created=True,
+                primary_key=True,
+                serialize=False,
+                verbose_name="ID",
+            ),
         ),
         migrations.AlterField(
             model_name="post",
             name="id",
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID"),
+            field=models.BigAutoField(
+                auto_created=True,
+                primary_key=True,
+                serialize=False,
+                verbose_name="ID",
+            ),
         ),
         migrations.CreateModel(
             name="Follow",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 (
                     "following",
                     models.ForeignKey(
@@ -66,6 +92,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name="follow",
-            constraint=models.UniqueConstraint(fields=("user", "following"), name="unique_follow"),
+            constraint=models.UniqueConstraint(
+                fields=("user", "following"), name="unique_follow"
+            ),
         ),
     ]

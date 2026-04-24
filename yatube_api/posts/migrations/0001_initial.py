@@ -14,14 +14,34 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Post",
             fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("text", models.TextField()),
-                ("pub_date", models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")),
-                ("image", models.ImageField(blank=True, null=True, upload_to="posts/")),
+                (
+                    "pub_date",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Дата публикации"
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="posts/"
+                    ),
+                ),
                 (
                     "author",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name="posts", to=settings.AUTH_USER_MODEL
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="posts",
+                        to=settings.AUTH_USER_MODEL,
                     ),
                 ),
             ],
@@ -29,9 +49,24 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Comment",
             fields=[
-                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("text", models.TextField()),
-                ("created", models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Дата добавления")),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        db_index=True,
+                        verbose_name="Дата добавления",
+                    ),
+                ),
                 (
                     "author",
                     models.ForeignKey(
@@ -43,7 +78,9 @@ class Migration(migrations.Migration):
                 (
                     "post",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name="comments", to="posts.post"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="comments",
+                        to="posts.post",
                     ),
                 ),
             ],
